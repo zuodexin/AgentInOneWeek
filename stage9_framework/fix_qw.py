@@ -8,6 +8,7 @@ from langchain_openai.chat_models.base import (
 
 # def fixed_convert_dict_to_message(_dict):
 #     """Fixed version of _convert_dict_to_message that handles None content."""
+#     ipdb.set_trace()
 #     if _dict.get("content") is None:
 #         _dict["content"] = _dict.get("reasoning", "")
 #     return old_convert_dict_to_message(_dict)

@@ -76,8 +76,8 @@ tools_by_name = {
 # import fix_qw
 
 model = init_chat_model(
-    "qwen3.5-27b",
-    # "qwen3.5-0.8b",
+    # "qwen3.5-27b",
+    "qwen3.5-0.8b",
     temperature=0,
     model_provider="openai",
     base_url="http://10.0.0.114/v1",
