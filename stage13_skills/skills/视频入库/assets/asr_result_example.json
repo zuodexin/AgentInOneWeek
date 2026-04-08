@@ -1,0 +1,25 @@
+{
+  "text": "此处存放整个文件的ASR结果",
+  "segments": [
+    {
+      "text": "你好，",
+      "start": 1.17,
+      "end": 7.0,
+      "words": [
+        {
+          "word": "你",
+          "start": 1.17,
+          "end": 1.735,
+          "confidence": 0.9
+        },
+        {
+          "word": "好",
+          "start": 6.76,
+          "end": 7.0,
+          "confidence": 0.9
+        }
+      ],
+      "speaker": "speaker_0"
+    }
+]
+}

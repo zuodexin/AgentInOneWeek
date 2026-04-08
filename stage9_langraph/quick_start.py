@@ -15,7 +15,9 @@ load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 
 class MessagesState(TypedDict):
-    messages: Annotated[list[AnyMessage], operator.add]
+    messages: Annotated[
+        list[AnyMessage], operator.add
+    ]  # Annotated给类型附加额外的元信息（metadata）, Annotated[类型, 元数据], 框架可以读取这些信息做特殊处理
     llm_calls: int
 
 
@@ -57,27 +59,31 @@ def divide(a: int, b: int) -> float:
 
 
 @tool
-def current_date_number() -> int:
-    """Returns the current date number (1-31)"""
-    from datetime import datetime
+def cli(command: str) -> str:
+    """Executes a CLI command and returns the output.
+    Args:
+        command: The CLI command to execute.
+    """
+    import subprocess
 
-    return datetime.now().day
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return result.stdout.strip()
 
 
-tools = [add, multiply, divide, current_date_number]
+tools = [add, multiply, divide, cli]
 tools_by_name = {
     "add": add,
     "multiply": multiply,
     "divide": divide,
-    "current_date_number": current_date_number,
+    "cli": cli,
 }
 
 
 # import fix_qw
 
 model = init_chat_model(
-    # "qwen3.5-27b",
-    "qwen3.5-0.8b",
+    "qwen3.5-27b",
+    # "qwen3.5-0.8b",
     temperature=0,
     model_provider="openai",
     base_url="http://10.0.0.114/v1",
@@ -105,13 +111,12 @@ from langchain.messages import ToolMessage
 
 def tool_node(state: dict):
     """Performs the tool call"""
-
     result = []
     for tool_call in state["messages"][-1].tool_calls:
         tool = tools_by_name[tool_call["name"]]
         observation = tool.invoke(tool_call["args"])
         result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
-    return {"messages": result}
+    return {"messages": result}  # state 的更新部分
 
 
 def llm_call(state: dict):
@@ -122,7 +127,7 @@ def llm_call(state: dict):
             model_with_tools.invoke(
                 [
                     SystemMessage(
-                        content="You are a helpful assistant tasked with performing arithmetic on a set of inputs."
+                        content="You are a helpful assistant tasked with several tools."
                     )
                 ]
                 + state["messages"]
@@ -173,7 +178,9 @@ except Exception:
 
 # ── Invoke ────────────────────────────────────────────────────────────────────
 
-messages = [HumanMessage(content="What's 5 times current date number?")]
+# messages = [HumanMessage(content="What's 5 times current date number?")]
+messages = [HumanMessage(content="What time is it?")]
+# messages = [HumanMessage(content="Is it time to sleep?")]  # fail
 result = agent.invoke({"messages": messages})
 for m in result["messages"]:
     m.pretty_print()

@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "research": "./video_parser.py:agent"
+  },
+  "env": "../.env"
+}
