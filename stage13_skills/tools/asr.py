@@ -185,13 +185,25 @@ def get_asr_backend(backend_name: str = "funasr") -> ASRBackend:
 
 
 def transcribe(
-    audio_path: str, language: str = "zh", backend_name: str = "funasr"
+    audio_path: str,
+    language: str = "zh",
+    backend_name: str = "funasr",
+    output_path: str = "asr_result.json",
 ) -> ASRResult:
     """
-    Transcribe audio file with word-level timestamps. The result can be very long, need to be saved as JSON file.
+    Transcribe audio file with word-level timestamps. The result is saved as JSON.
+    Args:
+        audio_path: Path to the input audio file.
+        language: Language of the audio (default: zh)
+        backend_name: ASR backend to use (funasr or whisper, default: funasr)
+        output_path: Path to save the ASR result as JSON (default: asr_result.json)
+    Returns: None (result is saved to output_path)
     """
     backend = get_asr_backend(backend_name)
-    return backend.transcribe(audio_path, language)
+    result = backend.transcribe(audio_path, language)
+    result_dict = result.to_dict()
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(result_dict, f, ensure_ascii=False, indent=2)
 
 
 # uv run -m skills.视频入库.scripts.asr  data/我记得.mp3 --language zh --backend funasr --output asr_result.json
@@ -220,9 +232,9 @@ if __name__ == "__main__":
         help="Path to save the ASR result as JSON",
     )
     args = parser.parse_args()
-    result = transcribe(
-        args.audio_path, language=args.language, backend_name=args.backend
+    transcribe(
+        args.audio_path,
+        language=args.language,
+        backend_name=args.backend,
+        output_path=args.output,
     )
-    result_dict = result.to_dict()
-    with open(args.output, "w", encoding="utf-8") as f:
-        json.dump(result_dict, f, ensure_ascii=False, indent=2)

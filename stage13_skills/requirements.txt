@@ -1,3 +1,0 @@
-funasr
-pyannote-audio
-faster-whisper

@@ -11,11 +11,12 @@ metadata:
 1. localize the video file by the video name or the person's name mentioned by the user.
 2. localize the database schema and make sure the database in ${pwd}/database/data.db is ready for importing, create the database if necessary.
 3. check if the video file is already in the database, if yes, skip the importing process and return the existing information. if the video file is not in the database, continue to the next step.
-4. use ffmpeg to extract the audio from the video file, and save it as a temporary audio file.
-5. use ASR tool to transcribe the audio file and get the transcript.
-6. look up and store relevant metadata in the database.
-7. according to the format of assets/asr_result_example.json，write python script to store the ASR results in the database.
+4. Identify your workspace folder for saving intermediate files, you can use ./workspace for this purpose. do not clean up the workspace folder, you can reuse the intermediate files in the workspace for future use.
+5. use ffmpeg to extract the audio from the video file, and save it as a temporary audio file, do not consume too much time for audio extraction.
+6. check if there is a ASR result, if not, use ASR tool to transcribe the audio file and get the transcript.
+7. check if the ASR result exists in the database, if not, store it in the database, you need to write python script to store the ASR results in the database.
 8. show the brief information of the database update.
+9. report the whole process.
 
 # Examples of inputs and outputs
 
